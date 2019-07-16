@@ -9,6 +9,8 @@ metadata:
   name: {{ template "fullname" . }}
 {{- end }}
   labels:
+    snappyflow/compname: python
+    snappyflow/appname: test
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 {{- if .Values.service.annotations }}
   annotations:

@@ -32,13 +32,14 @@ pipeline {
     }
     stage('Build Release') {
       when {
-        branch 'master'
+        branch env.BRANCH_NAME
       }
       steps {
         container('python') {
 
           // ensure we're not on a detached head
-          sh "git checkout master"
+          sh "git checkout ${env.BRANCH_NAME}"
+          sh 'git config --global credential.username maddalimanideep'
           sh "git config --global credential.helper store"
           sh "jx step git credentials"
 
@@ -51,9 +52,9 @@ pipeline {
         }
       }
     }
-    stage('Promote to Environments') {
+    stage('Release Chart') {
       when {
-        branch 'master'
+        branch env.BRANCH_NAME
       }
       steps {
         container('python') {
@@ -64,7 +65,6 @@ pipeline {
             sh "jx step helm release"
 
             // promote through all 'Auto' promotion Environments
-            sh "jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)"
           }
         }
       }
